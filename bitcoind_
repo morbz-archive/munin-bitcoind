@@ -1,0 +1,19 @@
+#!/bin/bash
+type=`cut -d "_" -f 2 <<< "$0"`
+type_upper="$(tr '[:lower:]' '[:upper:]' <<< ${type:0:1})${type:1}"
+if [ "$1" = "config" ]; then
+  echo "graph_category bitcoin"
+  echo "graph_title Bitcoin $type_upper"
+  echo "graph_vlabel $type_upper"
+  echo "$type.label $type"
+else
+  bcpath="/usr/local/bin/bitcoind"
+  if [ "$type" = "connections" ]; then
+    value=`$bcpath getconnectioncount`
+  elif [ "$type" = "blocks" ]; then
+    value=`$bcpath getblockcount`
+  elif [ "$type" = "difficulty" ]; then
+    value=`$bcpath getdifficulty`
+  fi
+  echo "$type.value $value"
+fi
